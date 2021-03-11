@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import personService from "./services/persons";
 import { Filter, PersonForm, Persons } from "./components";
 
 const App = () => {
@@ -9,9 +9,8 @@ const App = () => {
   const [filterPersons, setFilterPersons] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((res) => {
-      const data = res.data;
-      setPersons(data);
+    personService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
@@ -28,12 +27,39 @@ const App = () => {
     );
 
     if (!!doesExists) {
-      return alert(`${newName} is already added to phonebook`);
+      const id = doesExists.id;
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        personService.update(id, personObject).then((returnedPerson) => {
+          const updatedPersonsObj = persons.map((person) =>
+            person.id !== id ? person : returnedPerson
+          );
+          setPersons(updatedPersonsObj);
+          setNewName("");
+          setNewNumber("");
+        });
+      }
+      return;
     }
 
-    setPersons(persons.concat(personObject));
-    setNewName("");
-    setNewNumber("");
+    personService.create(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setNewName("");
+      setNewNumber("");
+    });
+  };
+
+  const deletePerson = (id) => {
+    const foundPerson = persons.find((person) => person.id === id);
+    if (window.confirm(`Delete ${foundPerson.name}`)) {
+      personService.deleteObj(id).then(() => {
+        const newPersonsObject = persons.filter((person) => person.id !== id);
+        setPersons(newPersonsObject);
+      });
+    }
   };
 
   const handleNameChange = (e) => {
@@ -75,7 +101,14 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons persons={persons} />
+      {!!persons &&
+        persons.map((person) => (
+          <Persons
+            key={person.id}
+            person={person}
+            action={() => deletePerson(person.id)}
+          />
+        ))}
     </div>
   );
 };
