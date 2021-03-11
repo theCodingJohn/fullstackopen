@@ -34,6 +34,7 @@ app.use(express.json());
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
+app.use(express.static("build"));
 
 app.get("/info", (request, response) => {
   response.send(`<p>Phonebook has infor for ${phonebook.length} people</p>
