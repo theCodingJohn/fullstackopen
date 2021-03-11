@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import personService from "./services/persons";
-import { Filter, PersonForm, Persons } from "./components";
+import { Filter, PersonForm, Persons, Notification } from "./components";
 
 const App = () => {
   const [persons, setPersons] = useState(null);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterPersons, setFilterPersons] = useState("");
+  const [notifMessage, setNotifMessage] = useState(null);
+  const [notifType, setNotifType] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -46,6 +48,9 @@ const App = () => {
     }
 
     personService.create(personObject).then((returnedPerson) => {
+      setNotifMessage(`Added ${returnedPerson.name}`);
+      setNotifType("successful");
+      setTimeout(() => setNotifMessage(null), 3000);
       setPersons(persons.concat(returnedPerson));
       setNewName("");
       setNewNumber("");
@@ -55,10 +60,19 @@ const App = () => {
   const deletePerson = (id) => {
     const foundPerson = persons.find((person) => person.id === id);
     if (window.confirm(`Delete ${foundPerson.name}`)) {
-      personService.deleteObj(id).then(() => {
-        const newPersonsObject = persons.filter((person) => person.id !== id);
-        setPersons(newPersonsObject);
-      });
+      personService
+        .deleteObj(id)
+        .then(() => {
+          const newPersonsObject = persons.filter((person) => person.id !== id);
+          setPersons(newPersonsObject);
+        })
+        .catch((error) => {
+          setNotifMessage(
+            `Information of ${foundPerson.name} has already been removed from the server`
+          );
+          setNotifType("error");
+          setTimeout(() => setNotifMessage(null), 3000);
+        });
     }
   };
 
@@ -92,6 +106,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notifMessage} type={notifType} />
 
       <Filter action={handleFilterChange} value={filterPersons} />
 
