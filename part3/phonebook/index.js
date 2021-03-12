@@ -47,7 +47,6 @@ app.post("/api/persons", (request, response) => {
   });
 
   person.save().then((savedPerson) => {
-    console.log(body);
     response.json(savedPerson);
   });
 });
