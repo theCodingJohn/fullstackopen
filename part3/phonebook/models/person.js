@@ -20,7 +20,7 @@ mongoose
 
 const personSchema = new Schema({
   name: String,
-  number: Number,
+  number: String,
 });
 
 personSchema.set("toJSON", {

@@ -30,9 +30,6 @@ app.get("/api/persons", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
-  const duplicateName = phonebook.find((person) => {
-    return person.name.toLowerCase === body.name.toLowerCase;
-  });
 
   if (!body.name) {
     return response.status(400).json({
@@ -42,18 +39,17 @@ app.post("/api/persons", (request, response) => {
     return response.status(400).json({
       error: "Number is missing",
     });
-  } else if (!!duplicateName) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
   }
 
-  const newPerson = body;
-  newPerson.id = generateId();
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  });
 
-  phonebook = phonebook.concat(newPerson);
-
-  response.json(phonebook);
+  person.save().then((savedPerson) => {
+    console.log(body);
+    response.json(savedPerson);
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
