@@ -52,9 +52,18 @@ app.post("/api/persons", (request, response) => {
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = parseInt(request.params.id);
-  phonebook = phonebook.filter((person) => person.id !== id);
-  response.status(204).end();
+  const id = request.params.id;
+  Person.findByIdAndDelete(id)
+    .then((result) => {
+      if (result) {
+        response.status(204).end();
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error.name);
+    });
 });
 
 const PORT = process.env.PORT || 3001;
