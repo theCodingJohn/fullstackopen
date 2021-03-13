@@ -47,14 +47,22 @@ const App = () => {
       return;
     }
 
-    personService.create(personObject).then((returnedPerson) => {
-      setNotifMessage(`Added ${returnedPerson.name}`);
-      setNotifType("successful");
-      setTimeout(() => setNotifMessage(null), 3000);
-      setPersons(persons.concat(returnedPerson));
-      setNewName("");
-      setNewNumber("");
-    });
+    personService
+      .create(personObject)
+      .then((returnedPerson) => {
+        setNotifMessage(`Added ${returnedPerson.name}`);
+        setNotifType("successful");
+        setTimeout(() => setNotifMessage(null), 3000);
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
+      })
+      .catch((error) => {
+        const errorMessage = error.response.data.error;
+        setNotifMessage(errorMessage);
+        setNotifType("error");
+        setTimeout(() => setNotifMessage(null), 3000);
+      });
   };
 
   const deletePerson = (id) => {
