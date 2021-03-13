@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express, { request, response } from "express";
+import express from "express";
 import morgan from "morgan";
 import Person from "./models/person.js";
 
 const app = express();
 
-morgan.token("body", (request, response) => JSON.stringify(request.body));
+morgan.token("body", (request) => JSON.stringify(request.body));
 
 app.use(express.json());
 app.use(
