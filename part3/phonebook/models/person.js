@@ -24,8 +24,12 @@ const personSchema = new Schema({
   name: {
     type: String,
     unique: true,
+    minlength: 3,
   },
-  number: String,
+  number: {
+    type: String,
+    minlength: 8,
+  },
 });
 
 personSchema.plugin(uniqueValidator);
