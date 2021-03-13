@@ -3,6 +3,7 @@ const listHelper = toTest.dummy;
 const totalLikes = toTest.totalLikes;
 const favoriteBlog = toTest.favoriteBlog;
 const mostBlogs = toTest.mostBlogs;
+const mostLikes = toTest.mostLikes;
 
 const blogs = [
   {
@@ -186,6 +187,26 @@ describe("most blogs", () => {
     expect(result).toEqual({
       author: "Edsger W. Dijkstra",
       blogs: 4,
+    });
+  });
+});
+
+describe("most likes", () => {
+  test("author with most likes in blogs object", () => {
+    const result = mostLikes(blogs);
+
+    expect(result).toEqual({
+      author: "Edsger W. Dijkstra",
+      likes: 17,
+    });
+  });
+
+  test("author with most likes in blogs2 object", () => {
+    const result = mostLikes(blogs2);
+
+    expect(result).toEqual({
+      author: "Edsger W. Dijkstra",
+      likes: 27,
     });
   });
 });

@@ -45,9 +45,40 @@ const mostBlogs = (blogs) => {
   return authors.find((author) => author.blogs === highestNumberOfBlogs);
 };
 
+const mostLikes = (blogs) => {
+  const authors = [];
+
+  const findAuthor = (toFindAuthor) =>
+    authors.find((author) => author.author.toLowerCase() === toFindAuthor);
+
+  blogs.forEach((blog) => {
+    if (findAuthor(blog.author.toLowerCase()) === undefined) {
+      const object = {
+        author: blog.author,
+        likes: blog.likes,
+      };
+      authors.push(object);
+    } else {
+      const updatedAuthors = authors.map((author) => {
+        if (author.author.toLowerCase() === blog.author.toLowerCase()) {
+          author.likes += blog.likes;
+        }
+      });
+      authors.concat(updatedAuthors);
+    }
+  });
+
+  const highestNumberOfLikes = Math.max(
+    ...authors.map((author) => author.likes)
+  );
+
+  return authors.find((author) => author.likes === highestNumberOfLikes);
+};
+
 export default {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };
