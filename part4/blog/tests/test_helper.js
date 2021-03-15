@@ -54,12 +54,12 @@ const initialBlogs = [
   },
 ];
 
-const notesInDB = async () => {
+const blogsInDB = async () => {
   const blogs = await Blog.find({});
   return blogs.map((blog) => blog.toJSON());
 };
 
 export default {
   initialBlogs,
-  notesInDB,
+  blogsInDB,
 };

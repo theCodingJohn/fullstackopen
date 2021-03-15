@@ -17,7 +17,7 @@ beforeEach(async () => {
 const api = supertest(app);
 
 test("the amount of blogs returned is correct", async () => {
-  const initialBLogs = await helper.notesInDB();
+  const initialBLogs = await helper.blogsInDB();
 
   const response = await api
     .get("/api/blogs")
@@ -29,6 +29,24 @@ test("the amount of blogs returned is correct", async () => {
 test("the unique identifier of blog posts is named id", async () => {
   const response = await api.get("/api/blogs");
   expect(response.body[0].id).toBeDefined();
+});
+
+test("successfully creates a new blog post", async () => {
+  const newBlog = {
+    title: "awesome blog",
+    author: "Albert Einstein",
+    url: "bloggers.com/232145",
+    likes: 39,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDB();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 });
 
 afterAll(() => {
