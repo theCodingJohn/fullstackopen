@@ -1,9 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
+import "express-async-errors";
 import cors from "cors";
 import blogsRouter from "./controllers/blog.controller.js";
 import logger from "./utils/logger.js";
 import config from "./utils/config.js";
+import middleware from "./utils/middleware.js";
 
 const app = express();
 
@@ -27,5 +29,7 @@ mongoose
 app.use(cors());
 app.use(express.json());
 app.use("/api/blogs", blogsRouter);
+
+app.use(middleware.errorHandler);
 
 export default app;

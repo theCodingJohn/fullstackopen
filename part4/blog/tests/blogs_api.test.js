@@ -60,6 +60,14 @@ test("a post request without a likes attribute will be saved in the DB with a de
   expect(savedBlog.body.likes).toBe(0);
 });
 
+test("a post request with no title and url attribute is a bad requests", async () => {
+  const newBlog = {
+    author: "Zeus",
+  };
+
+  await api.post("/api/blogs").send(newBlog).expect(400);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
