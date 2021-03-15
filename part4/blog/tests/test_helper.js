@@ -1,4 +1,5 @@
-import Blog from "../modules/blog.module.js";
+import Blog from "../models/blog.model.js";
+import User from "../models/user.model.js";
 
 const initialBlogs = [
   {
@@ -56,10 +57,40 @@ const initialBlogs = [
 
 const blogsInDB = async () => {
   const blogs = await Blog.find({});
-  return blogs.map((blog) => blog.toJSON());
+  return blogs;
 };
 
-export default {
+const initialUsers = [
+  {
+    username: "codingjohn",
+    password: "thehardestpassword",
+    name: "John Cunanan",
+    blogs: [],
+  },
+  {
+    username: "roxena",
+    password: "selflove",
+    name: "Roxen",
+    blogs: [],
+  },
+  {
+    username: "janedoe",
+    password: "trytoguessmypassword",
+    name: "Jane Doe",
+    blogs: [],
+  },
+];
+
+const usersInDB = async () => {
+  const users = await User.find({});
+  return users;
+};
+
+const helper = {
   initialBlogs,
   blogsInDB,
+  usersInDB,
+  initialUsers,
 };
+
+export default helper;

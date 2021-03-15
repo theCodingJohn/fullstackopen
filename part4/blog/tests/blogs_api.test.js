@@ -3,7 +3,7 @@ import supertest from "supertest";
 import app from "../app.js";
 import helper from "./test_helper.js";
 
-import Blog from "../modules/blog.module.js";
+import Blog from "../models/blog.model.js";
 
 beforeEach(async () => {
   await Blog.deleteMany({});
