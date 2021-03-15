@@ -49,6 +49,17 @@ test("successfully creates a new blog post", async () => {
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 });
 
+test("a post request without a likes attribute will be saved in the DB with a default value of 0", async () => {
+  const newBlog = {
+    title: "oh la la la",
+    author: "Icarus",
+    url: "blogspot.com/54351232",
+  };
+
+  const savedBlog = await api.post("/api/blogs").send(newBlog);
+  expect(savedBlog.body.likes).toBe(0);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
