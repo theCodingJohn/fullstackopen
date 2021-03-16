@@ -6,9 +6,10 @@ import logger from "./utils/logger.js";
 import config from "./utils/config.js";
 import middleware from "./utils/middleware.js";
 
-// Routes
+// Routers
 import blogsRouter from "./controllers/blog.controller.js";
 import usersRouter from "./controllers/user.controller.js";
+import loginRouter from "./controllers/login.controller.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/blogs", blogsRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/login", loginRouter);
 
 app.use(middleware.errorHandler);
 
