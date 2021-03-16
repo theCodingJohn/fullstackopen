@@ -27,8 +27,10 @@ const errorHandler = (error, req, res, next) => {
   next(error);
 };
 
-export default {
+const middleware = {
   errorHandler,
   tokenExtractor,
   userExtractor,
 };
+
+export default middleware;

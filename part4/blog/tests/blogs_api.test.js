@@ -32,6 +32,16 @@ test("the unique identifier of blog posts is named id", async () => {
 });
 
 test("successfully creates a new blog post", async () => {
+  const userCredentials = {
+    username: "john",
+    password: "john123",
+  };
+
+  const authorizedUser = await api
+    .post("/api/login")
+    .send(userCredentials)
+    .expect("Content-Type", /application\/json/);
+
   const newBlog = {
     title: "awesome blog",
     author: "Albert Einstein",
@@ -42,6 +52,7 @@ test("successfully creates a new blog post", async () => {
   await api
     .post("/api/blogs")
     .send(newBlog)
+    .set("Authorization", `bearer ${authorizedUser.body.token}`)
     .expect(201)
     .expect("Content-Type", /application\/json/);
 
@@ -50,22 +61,51 @@ test("successfully creates a new blog post", async () => {
 });
 
 test("a post request without a likes attribute will be saved in the DB with a default value of 0", async () => {
+  const userCredentials = {
+    username: "john",
+    password: "john123",
+  };
+
+  const authorizedUser = await api
+    .post("/api/login")
+    .send(userCredentials)
+    .expect("Content-Type", /application\/json/);
+
   const newBlog = {
     title: "oh la la la",
     author: "Icarus",
     url: "blogspot.com/54351232",
   };
 
-  const savedBlog = await api.post("/api/blogs").send(newBlog);
+  const savedBlog = await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .set("Authorization", `bearer ${authorizedUser.body.token}`)
+    .expect("Content-Type", /application\/json/);
   expect(savedBlog.body.likes).toBe(0);
 });
 
 test("a post request with no title and url attribute is a bad requests", async () => {
+  const userCredentials = {
+    username: "john",
+    password: "john123",
+  };
+
+  const authorizedUser = await api
+    .post("/api/login")
+    .send(userCredentials)
+    .expect("Content-Type", /application\/json/);
+
   const newBlog = {
     author: "Zeus",
   };
 
-  await api.post("/api/blogs").send(newBlog).expect(400);
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .set("Authorization", `bearer ${authorizedUser.body.token}`)
+    .expect("Content-Type", /application\/json/)
+    .expect(400);
 });
 
 afterAll(() => {
