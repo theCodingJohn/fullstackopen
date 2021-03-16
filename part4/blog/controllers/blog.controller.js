@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import express from "express";
 import Blog from "../models/blog.model.js";
 import User from "../models/user.model.js";
@@ -12,11 +11,7 @@ blogsRouter.get("/", async (request, response) => {
 
 blogsRouter.post("/", async (request, response) => {
   const body = request.body;
-  const token = request.token;
-  const decodedToken = jwt.verify(token, process.env.SECRET);
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: "token missing or invalid" });
-  }
+  const decodedToken = request.decodedToken;
 
   const user = await User.findById(decodedToken.id);
 
@@ -52,11 +47,7 @@ blogsRouter.put("/:id", async (request, response) => {
 
 blogsRouter.delete("/:id", async (request, response) => {
   const id = request.params.id;
-  const token = request.token;
-  const decodedToken = jwt.verify(token, process.env.SECRET);
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: "token missing or invalid" });
-  }
+  const decodedToken = request.decodedToken;
 
   const blog = await Blog.findById(id);
   if (blog.user.toString() === decodedToken.id) {
