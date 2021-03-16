@@ -46,6 +46,19 @@ describe("addition of a user", () => {
     const usernames = usersAtEnd.map((user) => user.username);
     expect(usernames).toContain(newUser.username);
   });
+
+  test("fails with status code 400 if data is invalid", async () => {
+    const newUser = {
+      username: "suckerpunch123",
+      name: "Matthew Bellamy",
+      blogs: [],
+    };
+
+    await api.post("/api/users").send(newUser).expect(400);
+
+    const usersAtEnd = await helper.usersInDB();
+    expect(usersAtEnd).toHaveLength(helper.initialUsers.length);
+  });
 });
 
 afterAll(() => {
