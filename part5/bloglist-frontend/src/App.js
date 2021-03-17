@@ -12,6 +12,9 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -22,6 +25,8 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
+
+      blogService.setToken(user.token);
     }
   }, []);
 
@@ -32,6 +37,7 @@ const App = () => {
       const user = await loginService.login({ username, password });
 
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
+      blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
@@ -70,6 +76,56 @@ const App = () => {
     );
   };
 
+  const addBlog = async (e) => {
+    e.preventDefault();
+    const newBlog = {
+      title,
+      author,
+      url,
+    };
+
+    const savedBlog = await blogService.create(newBlog);
+    setBlogs(blogs.concat(savedBlog));
+    setTitle("");
+    setAuthor("");
+    setUrl("");
+  };
+
+  const blogForm = () => {
+    return (
+      <form onSubmit={addBlog}>
+        <div>
+          title:
+          <input
+            onChange={({ target }) => setTitle(target.value)}
+            value={title}
+            type="text"
+            name="title"
+          />
+        </div>
+        <div>
+          author:
+          <input
+            onChange={({ target }) => setAuthor(target.value)}
+            value={author}
+            type="text"
+            name="author"
+          />
+        </div>
+        <div>
+          url:
+          <input
+            onChange={({ target }) => setUrl(target.value)}
+            value={url}
+            type="text"
+            name="url"
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    );
+  };
+
   const logoutUser = () => {
     setUser(null);
     window.localStorage.clear();
@@ -82,6 +138,8 @@ const App = () => {
           <strong>{user.name}</strong> is logged in
           <button onClick={logoutUser}>logout</button>
         </div>
+        <h2>create new</h2>
+        {blogForm()}
         <br />
         {blogList}
       </div>
