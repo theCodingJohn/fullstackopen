@@ -17,11 +17,21 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+    }
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
       const user = await loginService.login({ username, password });
+
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
       setUser(user);
       setUsername("");
       setPassword("");
@@ -60,11 +70,29 @@ const App = () => {
     );
   };
 
+  const logoutUser = () => {
+    setUser(null);
+    window.localStorage.clear();
+  };
+
+  const userPage = () => {
+    return (
+      <div>
+        <div>
+          <strong>{user.name}</strong> is logged in
+          <button onClick={logoutUser}>logout</button>
+        </div>
+        <br />
+        {blogList}
+      </div>
+    );
+  };
+
   return (
     <div>
       <h2>{!!user ? "blogs" : "log in to application"}</h2>
       <Notification message={notifMessage} type={notifType} />
-      {user === null ? loginForm() : blogList}
+      {user === null ? loginForm() : userPage()}
     </div>
   );
 };
