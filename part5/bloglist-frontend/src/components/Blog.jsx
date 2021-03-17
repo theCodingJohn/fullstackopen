@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import blogService from "../services/blogs";
 
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog, blogs, setBlogs, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -28,6 +28,18 @@ const Blog = ({ blog, blogs, setBlogs }) => {
     }
   }
 
+  const deleteBlog = async (id) => {
+    try {
+      const blog = blogs.find(blog => blog.id === id);
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+        await blogService.deleteItem(id);
+        setBlogs(blogs.filter(blog => blog.id !== id));
+      }
+    } catch (e)  {
+      console.log(e);
+    }
+  }
+
   return (
     <div style={blogStyle}>
       <div>
@@ -35,7 +47,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
         <button onClick={toggleVisibility}>{visible ? "hide" : "view"}</button>
       </div>
       <div style={showWhenVisible}>
-        {blog.url} <br/> {blog.likes} <button onClick={() => likeBlog(blog.id)}>like</button> <br/> {blog.user.name}
+        {blog.url} <br/> {blog.likes} <button onClick={() => likeBlog(blog.id)}>like</button> <br/> {blog.user.name} <br /> {user.username === blog.user.username && <button onClick={() => deleteBlog(blog.id)}>remove</button>}
       </div>
     </div>
   )
