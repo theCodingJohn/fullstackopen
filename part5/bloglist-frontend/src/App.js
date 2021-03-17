@@ -89,6 +89,13 @@ const App = () => {
     setTitle("");
     setAuthor("");
     setUrl("");
+    setNotifMessage(
+      `a new blog ${savedBlog.title} by ${savedBlog.author} added`
+    );
+    setNotifType("successful");
+    setTimeout(() => {
+      setNotifMessage(null);
+    }, 3000);
   };
 
   const blogForm = () => {
