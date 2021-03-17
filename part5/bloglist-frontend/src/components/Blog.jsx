@@ -21,6 +21,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
       const blog = blogs.find(blog => blog.id === id);
       const updatedBlog = { ...blog, likes: blog.likes += 1 };
       const returnedBlog = await blogService.update(id, updatedBlog);
+      returnedBlog.user = blog.user;
       setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog));
     } catch (e) {
       console.log(e);
