@@ -47,8 +47,20 @@ const App = () => {
     }
   };
 
+  const likeBlog = async (id) => {
+    try {
+      const blog = blogs.find(blog => blog.id === id);
+      const updatedBlog = { ...blog, likes: blog.likes += 1 };
+      const returnedBlog = await blogService.update(id, updatedBlog);
+      returnedBlog.user = blog.user;
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const sortedBlogsByLikes = blogs.sort((a, b) => a.likes - b.likes);
-  const blogList = sortedBlogsByLikes.map((blog) => <Blog user={user} key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} />);
+  const blogList = sortedBlogsByLikes.map((blog) => <Blog user={user} key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} likeBlog={() => likeBlog(blog.id)}/>);
 
   const loginForm = () => {
     return (

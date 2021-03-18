@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import blogService from "../services/blogs";
 import PropTypes from "prop-types";
 
-const Blog = ({ blog, blogs, setBlogs, user }) => {
+const Blog = ({ blog, blogs, setBlogs, user, likeBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -16,18 +16,6 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
   const showWhenVisible = { display: visible ? "" : "none" };
 
   const toggleVisibility = () => setVisible(!visible);
-
-  const likeBlog = async (id) => {
-    try {
-      const blog = blogs.find(blog => blog.id === id);
-      const updatedBlog = { ...blog, likes: blog.likes += 1 };
-      const returnedBlog = await blogService.update(id, updatedBlog);
-      returnedBlog.user = blog.user;
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog));
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   const deleteBlog = async (id) => {
     try {
@@ -48,7 +36,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
         <button onClick={toggleVisibility}>{visible ? "hide" : "view"}</button>
       </div>
       <div className="blogBody" style={showWhenVisible}>
-        {blog.url} <br/> {blog.likes} <button onClick={() => likeBlog(blog.id)}>like</button> <br/> {blog.user.name} <br /> {user.username === blog.user.username && <button onClick={() => deleteBlog(blog.id)}>remove</button>}
+        {blog.url} <br/> {blog.likes} <button onClick={likeBlog}>like</button> <br/> {blog.user.name} <br /> {user.username === blog.user.username && <button onClick={() => deleteBlog(blog.id)}>remove</button>}
       </div>
     </div>
   );

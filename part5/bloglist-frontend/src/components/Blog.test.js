@@ -5,7 +5,6 @@ import Blog from "./Blog";
 
 describe("<Blog />", () => {
   let component;
-  const mockHandler = jest.fn;
   const testBlog = {
     title: "Hello World: The Infamous Line",
     author: "Kent Dodds",
@@ -34,6 +33,8 @@ describe("<Blog />", () => {
     id: "605038f6c00b3103e8b441a6",
   };
 
+  const mockHandler = jest.fn();
+
   beforeEach(() => {
     component = render(
       <Blog
@@ -41,6 +42,7 @@ describe("<Blog />", () => {
         setBlogs={mockHandler}
         blogs={testBlogs}
         user={user}
+        likeBlog={mockHandler}
       />
     );
   });
@@ -62,5 +64,16 @@ describe("<Blog />", () => {
 
     expect(div).toHaveTextContent(testBlog.url);
     expect(div).toHaveTextContent(testBlog.likes);
+  });
+
+  test("like button has been clicked twice", () => {
+    const showButton = component.container.querySelector("button");
+    fireEvent.click(showButton);
+
+    const likeButton = component.container.querySelector(".blogBody button");
+    fireEvent.click(likeButton);
+    fireEvent.click(likeButton);
+
+    expect(mockHandler.mock.calls).toHaveLength(2);
   });
 });
