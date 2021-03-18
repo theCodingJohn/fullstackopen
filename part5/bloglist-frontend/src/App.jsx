@@ -5,7 +5,7 @@ import loginService from "./services/login";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
-import BlogForm from "./components/BlogForm"
+import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -41,7 +41,7 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (e) {
-      setNotifMessage(`Wrong Credentials`);
+      setNotifMessage("Wrong Credentials");
       setNotifType("error");
       setTimeout(() => setNotifMessage(null), 3000);
     }
@@ -79,7 +79,7 @@ const App = () => {
   const addBlog = async (newBlog) => {
     const savedBlog = await blogService.create(newBlog);
     setBlogs(blogs.concat(savedBlog));
-  
+
     setNotifMessage(
       `a new blog ${savedBlog.title} by ${savedBlog.author} added`
     );
@@ -119,7 +119,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>{!!user ? "blogs" : "log in to application"}</h2>
+      <h2>{!user ? "log in to application" : "blogs"}</h2>
       <Notification message={notifMessage} type={notifType} />
       {user === null ? loginForm() : userPage()}
     </div>

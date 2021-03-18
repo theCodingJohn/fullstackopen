@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import blogService from "../services/blogs";
 import PropTypes from "prop-types";
 
@@ -9,7 +9,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5
-  }
+  };
 
   const [visible, setVisible] = useState(false);
 
@@ -27,7 +27,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   const deleteBlog = async (id) => {
     try {
@@ -39,7 +39,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
     } catch (e)  {
       console.log(e);
     }
-  }
+  };
 
   return (
     <div style={blogStyle}>
@@ -51,14 +51,14 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
         {blog.url} <br/> {blog.likes} <button onClick={() => likeBlog(blog.id)}>like</button> <br/> {blog.user.name} <br /> {user.username === blog.user.username && <button onClick={() => deleteBlog(blog.id)}>remove</button>}
       </div>
     </div>
-  )
-}
+  );
+};
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   blogs: PropTypes.array.isRequired,
   setBlogs: PropTypes.func.isRequired,
   user: PropTypes.object
-}
+};
 
-export default Blog
+export default Blog;
