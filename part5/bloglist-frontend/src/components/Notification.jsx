@@ -12,14 +12,14 @@ const Notification = ({ message, type }) => {
   };
 
   switch (type) {
-    case "successful":
-      style.color = "green";
-      break;
-    default:
-      style.color = "red";
+  case "successful":
+    style.color = "green";
+    break;
+  default:
+    style.color = "red";
   }
 
-  if (!!message) {
+  if (message) {
     return (
       <div className="notif" style={style}>
         {message}
