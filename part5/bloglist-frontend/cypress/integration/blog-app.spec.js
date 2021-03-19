@@ -48,5 +48,17 @@ describe("Blog app", function () {
 
       cy.contains("Blog created with cypress");
     });
+
+    it.only("A user can like a blog", function () {
+      cy.createBlog({
+        title: "Blog created with cypress",
+        author: "unknown",
+        url: "https://blogspot.com/24124",
+      });
+
+      cy.contains("Blog created with cypress").find("button").click();
+      cy.get(".likeButton").click();
+      cy.get(".like-value").contains(1);
+    });
   });
 });
