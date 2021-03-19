@@ -33,4 +33,20 @@ describe("Blog app", function () {
         .and("have.css", "color", "rgb(255, 0, 0)");
     });
   });
+
+  describe("When logged in", function () {
+    beforeEach(function () {
+      cy.login({ username: "john", password: "john123" });
+    });
+
+    it("A blog can be created", function () {
+      cy.createBlog({
+        title: "Blog created with cypress",
+        author: "unknown",
+        url: "https://blogspot.com/24124",
+      });
+
+      cy.contains("Blog created with cypress");
+    });
+  });
 });
