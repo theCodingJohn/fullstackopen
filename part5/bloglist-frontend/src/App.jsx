@@ -59,7 +59,7 @@ const App = () => {
     }
   };
 
-  const sortedBlogsByLikes = blogs.sort((a, b) => a.likes - b.likes);
+  const sortedBlogsByLikes = blogs.sort((a, b) => b.likes - a.likes);
   const blogList = sortedBlogsByLikes.map((blog) => <Blog user={user} key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} likeBlog={() => likeBlog(blog.id)}/>);
 
   const loginForm = () => {

@@ -76,5 +76,39 @@ describe("Blog app", function () {
       cy.contains("Blog created with cypress").find("button").click();
       cy.get(".blogBody").should("not.contain", "remove");
     });
+
+    it("Blogs are sorted from most liked blog to less liked", function () {
+      cy.createBlog({
+        title: "For reasons unknown",
+        author: "Jane Doe",
+        url: "https://blogspot.com/23523",
+      });
+
+      cy.createBlog({
+        title: "Who am I?",
+        author: "Plato",
+        url: "https://blogspot.com/234234",
+      });
+
+      cy.contains("For reasons unknown").find("button").click();
+      cy.contains("Blog created with cypress").find("button").click();
+      cy.contains("Who am I?").find("button").click();
+
+      cy.get(".likeButton").then((buttons) => {
+        cy.wrap(buttons[1]).click();
+        cy.wrap(buttons[1]).click();
+        cy.wrap(buttons[2]).click();
+        cy.wrap(buttons[2]).click();
+        cy.wrap(buttons[2]).click();
+      });
+
+      let numOfLikes = [3, 2, 0];
+
+      cy.get(".like-value").then((likes) => {
+        likes.map((i, like) => {
+          cy.wrap(like[i]).contains(numOfLikes[i]);
+        });
+      });
+    });
   });
 });
