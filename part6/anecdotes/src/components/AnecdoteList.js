@@ -12,6 +12,11 @@ const AnecdoteList = () => {
   );
   const dispatch = useDispatch();
 
+  const filter = useSelector(({ filter }) => filter);
+  const filteredAnecdotes = anecdotes.filter((anecdote) =>
+    anecdote.content.includes(filter)
+  );
+
   const vote = (id, content) => {
     dispatch(addVote(id));
 
@@ -23,7 +28,7 @@ const AnecdoteList = () => {
 
   return (
     <>
-      {anecdotes.map((anecdote) => (
+      {filteredAnecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
