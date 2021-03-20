@@ -7,15 +7,11 @@ import {
 } from "../reducers/notificationReducer";
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector(({ anecdotes }) =>
-    anecdotes.sort((a, b) => b.votes - a.votes)
-  );
+  const anecdotes = useSelector(({ filter, anecdotes }) => {
+    if (filter === "") return anecdotes.sort((a, b) => b.votes - a.votes);
+    return anecdotes.filter((anecdote) => anecdote.content.includes(filter));
+  });
   const dispatch = useDispatch();
-
-  const filter = useSelector(({ filter }) => filter);
-  const filteredAnecdotes = anecdotes.filter((anecdote) =>
-    anecdote.content.includes(filter)
-  );
 
   const vote = (id, content) => {
     dispatch(addVote(id));
@@ -28,7 +24,7 @@ const AnecdoteList = () => {
 
   return (
     <>
-      {filteredAnecdotes.map((anecdote) => (
+      {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
