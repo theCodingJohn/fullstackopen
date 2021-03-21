@@ -7,10 +7,13 @@ export const asObject = (anecdote) => {
   };
 };
 
-export const createAnecdote = (data) => {
-  return {
-    type: "NEW_ANECDOTE",
-    data: data,
+export const createAnecdote = (anecdote) => {
+  return async (dispatch) => {
+    const newAnecdote = await noteService.createNew(asObject(anecdote));
+    dispatch({
+      type: "NEW_ANECDOTE",
+      data: newAnecdote,
+    });
   };
 };
 
