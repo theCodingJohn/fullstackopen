@@ -9,12 +9,18 @@ const notificationReducer = (state = null, action) => {
   }
 };
 
-export const showNotification = (notification) => {
-  return {
-    type: "SHOW_NOTIF",
-    data: {
-      notification,
-    },
+export const showNotification = (notification, duration) => {
+  return async (dispatch) => {
+    dispatch({
+      type: "SHOW_NOTIF",
+      data: {
+        notification,
+      },
+    });
+
+    setTimeout(() => {
+      dispatch(hideNotification());
+    }, duration * 1000);
   };
 };
 
