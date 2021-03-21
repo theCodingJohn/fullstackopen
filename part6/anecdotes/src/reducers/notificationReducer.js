@@ -11,6 +11,9 @@ const notificationReducer = (state = null, action) => {
 
 export const showNotification = (notification, duration) => {
   return async (dispatch) => {
+    if (window.timer) {
+      clearTimeout(window.timer);
+    }
     dispatch({
       type: "SHOW_NOTIF",
       data: {
@@ -18,7 +21,7 @@ export const showNotification = (notification, duration) => {
       },
     });
 
-    setTimeout(() => {
+    window.timer = setTimeout(() => {
       dispatch(hideNotification());
     }, duration * 1000);
   };
