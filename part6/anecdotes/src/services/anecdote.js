@@ -12,9 +12,16 @@ const createNew = async (newAnecdote) => {
   return response.data;
 };
 
+const vote = async (anecdote) => {
+  const response = await axios.patch(`${baseUrl}/${anecdote.id}`, anecdote);
+
+  return response.data;
+};
+
 const anecdoteService = {
   getAll,
   createNew,
+  vote,
 };
 
 export default anecdoteService;
