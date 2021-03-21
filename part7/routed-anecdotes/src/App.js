@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Switch, Route, Link, useRouteMatch } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useHistory,
+} from "react-router-dom";
 
 const Menu = () => {
   const padding = {
@@ -70,18 +76,30 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
+  const history = useHistory();
+
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
   const [info, setInfo] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.addNew({
+
+    const newAnecdote = {
       content,
       author,
       info,
       votes: 0,
-    });
+    };
+
+    props.addNew(newAnecdote);
+
+    history.push("/");
+    props.setNotification(newAnecdote);
+
+    setTimeout(() => {
+      props.setNotification(null);
+    }, 10 * 1000);
   };
 
   return (
@@ -129,6 +147,10 @@ const Anecdote = ({ anecdote }) => {
       <br />
     </>
   );
+};
+
+const Notification = ({ anecdote }) => {
+  return <div>a new anecdote {anecdote.content} created!</div>;
 };
 
 const App = () => {
@@ -179,6 +201,8 @@ const App = () => {
       <h1>Software anecdotes</h1>
       <Menu />
 
+      {notification ? <Notification anecdote={notification} /> : null}
+
       <Switch>
         <Route path="/anecdotes/:id">
           <Anecdote anecdote={anecdote} />
@@ -187,7 +211,11 @@ const App = () => {
           <About />
         </Route>
         <Route path="/create">
-          <CreateNew addNew={addNew} />
+          <CreateNew
+            addNew={addNew}
+            notification={notification}
+            setNotification={setNotification}
+          />
         </Route>
         <Route path="/">
           <AnecdoteList anecdotes={anecdotes} />
