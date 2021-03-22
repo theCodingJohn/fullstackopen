@@ -6,6 +6,7 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom";
+import { useField } from "./hooks";
 
 const Menu = () => {
   const padding = {
@@ -78,9 +79,9 @@ const Footer = () => (
 const CreateNew = (props) => {
   const history = useHistory();
 
-  const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const [info, setInfo] = useState("");
+  const content = useField("content", "text");
+  const author = useField("author", "text");
+  const info = useField("info", "text");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -102,6 +103,12 @@ const CreateNew = (props) => {
     }, 10 * 1000);
   };
 
+  const handleReset = () => {
+    content.reset();
+    author.reset();
+    info.reset();
+  };
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -109,28 +116,34 @@ const CreateNew = (props) => {
         <div>
           content
           <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            name={content.name}
+            type={content.type}
+            onChange={content.onChange}
+            value={content.value}
           />
         </div>
         <div>
           author
           <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
+            name={author.name}
+            type={author.type}
+            onChange={author.onChange}
+            value={author.value}
           />
         </div>
         <div>
           url for more info
           <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
+            name={info.name}
+            type={info.type}
+            onChange={info.onChange}
+            value={info.value}
           />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button onClick={handleReset} type="reset">
+          reset
+        </button>
       </form>
     </div>
   );
@@ -201,7 +214,7 @@ const App = () => {
       <h1>Software anecdotes</h1>
       <Menu />
 
-      {notification ? <Notification anecdote={notification} /> : null}
+      {/* {notification ? <Notification anecdote={notification} /> : null} */}
 
       <Switch>
         <Route path="/anecdotes/:id">
