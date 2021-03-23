@@ -20,6 +20,7 @@ import BlogForm from "./components/BlogForm";
 import Users from "./components/Users";
 import User from "./components/User";
 import BlogDetails from "./components/BlogDetails";
+import Nav from "./components/Nav";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -129,19 +130,19 @@ const App = () => {
     );
   };
 
-  const userDetails = () => {
-    return (
-      <div>
-        <strong>{user.name}</strong> is logged in
-        <button onClick={logoutUser}>logout</button>
-      </div>
-    );
-  };
+  // const userDetails = () => {
+  //   return (
+  //     <div>
+  //       <strong>{user.name}</strong> is logged in
+  //       <button onClick={logoutUser}>logout</button>
+  //     </div>
+  //   );
+  // };
 
   return (
     <Router>
+      <Nav user={user} logoutUser={logoutUser} />
       <h2>{!user ? "log in to application" : "blogs"}</h2>
-      {user ? userDetails() : null}
       <Notification />
       <Switch>
         <Route path="/users/:id">
