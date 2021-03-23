@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "./reducers/notificationReducer";
-import { initializeBlogs } from "./reducers/blogReducer";
+import { initializeBlogs, like } from "./reducers/blogReducer";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -13,7 +13,7 @@ import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const dispatch = useDispatch();
-  const blogs = useSelector(({ blogs }) => blogs);
+  const blogs = useSelector(({ blogs }) => blogs.sort((a, b) => b.likes - a.likes));
 
   const [, setBlogs] = useState(null);
   const [username, setUsername] = useState("");
@@ -54,16 +54,13 @@ const App = () => {
     try {
       const blog = blogs.find(blog => blog.id === id);
       const updatedBlog = { ...blog, likes: blog.likes += 1 };
-      const returnedBlog = await blogService.update(id, updatedBlog);
-      returnedBlog.user = blog.user;
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog));
+      dispatch(like(id, updatedBlog, blog.user));
     } catch (e) {
       console.log(e);
     }
   };
 
-  const sortedBlogsByLikes = blogs.sort((a, b) => b.likes - a.likes);
-  const blogList = sortedBlogsByLikes.map((blog) => <Blog user={user} key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} likeBlog={() => likeBlog(blog.id)}/>);
+  const blogList = blogs.map((blog) => <Blog user={user} key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} likeBlog={() => likeBlog(blog.id)}/>);
 
   const loginForm = () => {
     return (
