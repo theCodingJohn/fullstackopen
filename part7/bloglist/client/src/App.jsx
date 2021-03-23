@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "./reducers/notificationReducer";
 import { initializeBlogs, like } from "./reducers/blogReducer";
 import { setUser, loginUser } from "./reducers/userReducer";
+import { getAllUsers } from "./reducers/usersReducer";
 
 import blogService from "./services/blogs";
 
@@ -10,6 +11,7 @@ import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
+import Users from "./components/Users";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -22,6 +24,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs());
+    dispatch(getAllUsers());
   }, []);
 
   useEffect(() => {
@@ -113,6 +116,7 @@ const App = () => {
           <strong>{user.name}</strong> is logged in
           <button onClick={logoutUser}>logout</button>
         </div>
+        <Users />
         <h2>create new</h2>
         {blogForm()}
         <br />
