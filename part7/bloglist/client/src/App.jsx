@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "./reducers/notificationReducer";
 import { initializeBlogs, like } from "./reducers/blogReducer";
+import { setUser, loginUser } from "./reducers/userReducer";
 
 import blogService from "./services/blogs";
-import loginService from "./services/login";
 
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
@@ -14,11 +14,11 @@ import BlogForm from "./components/BlogForm";
 const App = () => {
   const dispatch = useDispatch();
   const blogs = useSelector(({ blogs }) => blogs.sort((a, b) => b.likes - a.likes));
+  const user = useSelector(({ user }) => user);
 
   const [, setBlogs] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -28,7 +28,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(setUser(user));
 
       blogService.setToken(user.token);
     }
@@ -38,11 +38,7 @@ const App = () => {
     e.preventDefault();
 
     try {
-      const user = await loginService.login({ username, password });
-
-      window.localStorage.setItem("loggedUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
+      dispatch(loginUser({ username, password }));
       setUsername("");
       setPassword("");
     } catch (e) {
