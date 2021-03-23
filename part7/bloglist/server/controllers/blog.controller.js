@@ -24,11 +24,11 @@ blogsRouter.post("/", middleware.userExtractor, async (request, response) => {
     user: user._id,
   });
 
-  const savedNote = await blog.save();
-  user.blogs = user.blogs.concat(savedNote);
+  const savedBlog = await blog.save();
+  user.blogs = user.blogs.concat(savedBlog);
   await user.save();
 
-  response.status(201).json(savedNote);
+  response.status(201).json(savedBlog);
 });
 
 blogsRouter.put("/:id", async (request, response) => {
@@ -42,8 +42,8 @@ blogsRouter.put("/:id", async (request, response) => {
     likes: body.likes,
   };
 
-  const updatedNote = await Blog.findByIdAndUpdate(id, blog, { new: true });
-  response.json(updatedNote);
+  const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
+  response.json(updatedBlog);
 });
 
 blogsRouter.delete(
@@ -62,5 +62,26 @@ blogsRouter.delete(
     }
   }
 );
+
+blogsRouter.post("/:id/comments", async (req, res) => {
+  const body = req.body;
+  const id = req.params.id;
+
+  const foundBlog = await Blog.findById(id);
+  console.log("body", body.comment);
+  console.log(foundBlog);
+
+  const blog = {
+    title: foundBlog.title,
+    author: foundBlog.author,
+    url: foundBlog.url,
+    likes: foundBlog.likes,
+    comments: foundBlog.comments.concat([body.comment]),
+  };
+  console.log(blog);
+
+  const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
+  res.json(updatedBlog);
+});
 
 export default blogsRouter;
