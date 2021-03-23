@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  useRouteMatch
 } from "react-router-dom";
 
 import { setNotification } from "./reducers/notificationReducer";
@@ -28,9 +28,13 @@ const App = () => {
   const user = useSelector(({ user }) => user);
   const users = useSelector(({ users }) => users);
 
-  const [, setBlogs] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const matchBlog = useRouteMatch("/blogs/:id");
+  const blog = matchBlog
+    ? blogs.find(blog => blog.id === matchBlog.params.id)
+    : null;
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -69,7 +73,7 @@ const App = () => {
     }
   };
 
-  const blogList = blogs.map((blog) => <Blog user={user} key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} likeBlog={() => likeBlog(blog.id)}/>);
+  const blogList = blogs.map((blog) => <Blog user={user} key={blog.id} blog={blog} blogs={blogs} likeBlog={() => likeBlog(blog.id)}/>);
 
   const loginForm = () => {
     return (
@@ -101,7 +105,6 @@ const App = () => {
 
   const addBlog = async (newBlog) => {
     const savedBlog = await blogService.create(newBlog);
-    setBlogs(blogs.concat(savedBlog));
 
     dispatch(setNotification(`a new blog ${savedBlog.title} by ${savedBlog.author} added`, "successful", 3));
   };
@@ -130,17 +133,8 @@ const App = () => {
     );
   };
 
-  // const userDetails = () => {
-  //   return (
-  //     <div>
-  //       <strong>{user.name}</strong> is logged in
-  //       <button onClick={logoutUser}>logout</button>
-  //     </div>
-  //   );
-  // };
-
   return (
-    <Router>
+    <>
       <Nav user={user} logoutUser={logoutUser} />
       <h2>{!user ? "log in to application" : "blogs"}</h2>
       <Notification />
@@ -152,13 +146,13 @@ const App = () => {
           <Users users={users} />
         </Route>
         <Route path="/blogs/:id">
-          <BlogDetails blogs={blogs} />
+          <BlogDetails blog={blog} />
         </Route>
         <Route path="/">
           {user === null ? loginForm() : userPage()}
         </Route>
       </Switch>
-    </Router>
+    </>
   );
 };
 

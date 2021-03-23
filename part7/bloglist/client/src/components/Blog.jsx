@@ -48,7 +48,6 @@ const Blog = ({ blog, blogs, user, likeBlog }) => {
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   blogs: PropTypes.array.isRequired,
-  setBlogs: PropTypes.func.isRequired,
   user: PropTypes.object
 };
 

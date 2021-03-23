@@ -8,6 +8,10 @@ const blogReducer = (state = [], action) => {
       return state.map((blog) =>
         blog.id !== action.data.id ? blog : action.data
       );
+    case "ADD_COMMENT":
+      return state.map((blog) => {
+        blog.id !== action.data.id ? blog : action.data;
+      });
     case "DELETE_BLOG":
       return state.filter((blog) => blog.id !== action.data.id);
     default:
@@ -45,6 +49,18 @@ export const deleteABlog = (id) => {
       data: {
         id,
       },
+    });
+  };
+};
+
+export const addComment = (id, comment) => {
+  return async (dispatch) => {
+    const returnedBlog = await blogService.addComment(id, comment);
+    console.log(returnedBlog);
+
+    dispatch({
+      type: "ADD_COMMENT",
+      data: returnedBlog,
     });
   };
 };
