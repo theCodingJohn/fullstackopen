@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import blogService from "../services/blogs";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { deleteABlog } from "../reducers/blogReducer";
 
-const Blog = ({ blog, blogs, setBlogs, user, likeBlog }) => {
+const Blog = ({ blog, blogs, user, likeBlog }) => {
+  const dispatch = useDispatch();
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -21,8 +24,7 @@ const Blog = ({ blog, blogs, setBlogs, user, likeBlog }) => {
     try {
       const blog = blogs.find(blog => blog.id === id);
       if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-        await blogService.deleteItem(id);
-        setBlogs(blogs.filter(blog => blog.id !== id));
+        dispatch(deleteABlog(id));
       }
     } catch (e)  {
       console.log(e);

@@ -8,6 +8,8 @@ const blogReducer = (state = [], action) => {
       return state.map((blog) =>
         blog.id !== action.data.id ? blog : action.data
       );
+    case "DELETE_BLOG":
+      return state.filter((blog) => blog.id !== action.data.id);
     default:
       return state;
   }
@@ -30,6 +32,19 @@ export const like = (id, updatedBlog, blogUser) => {
     dispatch({
       type: "LIKE_BLOG",
       data: returnedBlog,
+    });
+  };
+};
+
+export const deleteABlog = (id) => {
+  return async (dispatch) => {
+    await blogService.deleteItem(id);
+
+    dispatch({
+      type: "DELETE_BLOG",
+      data: {
+        id,
+      },
     });
   };
 };
