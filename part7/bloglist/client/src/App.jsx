@@ -19,6 +19,7 @@ import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import Users from "./components/Users";
 import User from "./components/User";
+import BlogDetails from "./components/BlogDetails";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -148,6 +149,9 @@ const App = () => {
         </Route>
         <Route path="/users">
           <Users users={users} />
+        </Route>
+        <Route path="/blogs/:id">
+          <BlogDetails blogs={blogs} />
         </Route>
         <Route path="/">
           {user === null ? loginForm() : userPage()}

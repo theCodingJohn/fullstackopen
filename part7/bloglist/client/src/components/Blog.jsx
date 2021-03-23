@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { deleteABlog } from "../reducers/blogReducer";
+import { Link } from "react-router-dom";
 
 const Blog = ({ blog, blogs, user, likeBlog }) => {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const Blog = ({ blog, blogs, user, likeBlog }) => {
   return (
     <div className="blog" style={blogStyle}>
       <div className="blogHeader">
-        {blog.title} <strong>{blog.author} </strong>
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> <strong>{blog.author} </strong>
         <button onClick={toggleVisibility}>{visible ? "hide" : "view"}</button>
       </div>
       <div className="blogBody" style={showWhenVisible}>
