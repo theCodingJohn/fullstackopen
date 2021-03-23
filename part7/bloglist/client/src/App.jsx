@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+
 import { setNotification } from "./reducers/notificationReducer";
 import { initializeBlogs, like } from "./reducers/blogReducer";
 import { setUser, loginUser } from "./reducers/userReducer";
@@ -12,11 +18,13 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import Users from "./components/Users";
+import User from "./components/User";
 
 const App = () => {
   const dispatch = useDispatch();
   const blogs = useSelector(({ blogs }) => blogs.sort((a, b) => b.likes - a.likes));
   const user = useSelector(({ user }) => user);
+  const users = useSelector(({ users }) => users);
 
   const [, setBlogs] = useState(null);
   const [username, setUsername] = useState("");
@@ -112,11 +120,6 @@ const App = () => {
   const userPage = () => {
     return (
       <div>
-        <div>
-          <strong>{user.name}</strong> is logged in
-          <button onClick={logoutUser}>logout</button>
-        </div>
-        <Users />
         <h2>create new</h2>
         {blogForm()}
         <br />
@@ -125,12 +128,32 @@ const App = () => {
     );
   };
 
+  const userDetails = () => {
+    return (
+      <div>
+        <strong>{user.name}</strong> is logged in
+        <button onClick={logoutUser}>logout</button>
+      </div>
+    );
+  };
+
   return (
-    <div>
+    <Router>
       <h2>{!user ? "log in to application" : "blogs"}</h2>
+      {user ? userDetails() : null}
       <Notification />
-      {user === null ? loginForm() : userPage()}
-    </div>
+      <Switch>
+        <Route path="/users/:id">
+          <User users={ users }/>
+        </Route>
+        <Route path="/users">
+          <Users users={users} />
+        </Route>
+        <Route path="/">
+          {user === null ? loginForm() : userPage()}
+        </Route>
+      </Switch>
+    </Router>
   );
 };
 

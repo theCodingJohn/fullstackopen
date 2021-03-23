@@ -1,23 +1,26 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-const Users = () => {
-  const users = useSelector(({ users }) => users);
-
+const Users = ({ users }) => {
   return (
     <div>
-      <h2>Users</h2>
+      <h1>Users</h1>
       <table>
-        <tr>
-          <th>name</th>
-          <th>blogs created</th>
-        </tr>
-        {users.map((user) => (
-          <tr key={user.id}>
-            <td>{user.name}</td>
-            <td>{user.blogs.length}</td>
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>blogs created</th>
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td>
+                <a href={`/users/${user.id}`}>{user.name}</a>
+              </td>
+              <td>{user.blogs.length}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
