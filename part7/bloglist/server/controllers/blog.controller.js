@@ -69,7 +69,6 @@ blogsRouter.post("/:id/comments", async (req, res) => {
 
   const foundBlog = await Blog.findById(id);
   console.log("body", body.comment);
-  console.log(foundBlog);
 
   const blog = {
     title: foundBlog.title,
@@ -78,7 +77,6 @@ blogsRouter.post("/:id/comments", async (req, res) => {
     likes: foundBlog.likes,
     comments: foundBlog.comments.concat([body.comment]),
   };
-  console.log(blog);
 
   const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
   res.json(updatedBlog);
