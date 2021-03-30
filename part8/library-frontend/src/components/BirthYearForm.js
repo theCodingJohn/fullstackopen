@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
+import Select from "react-select";
 
 import { EDIT_AUTHOR, GET_AUTHORS } from "../queries";
 
-const BirthYearForm = () => {
+const BirthYearForm = ({ options }) => {
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
 
@@ -15,7 +16,6 @@ const BirthYearForm = () => {
     event.preventDefault();
 
     await changeBirthYear({ variables: { name, setBornTo: parseInt(born) } });
-
     setName("");
     setBorn("");
   };
@@ -24,16 +24,12 @@ const BirthYearForm = () => {
     <div>
       <h2>Set birthyear</h2>
       <form onSubmit={submit}>
-        <div>
-          name
-          <input
-            onChange={({ target }) => setName(target.value)}
-            value={name}
-            type="text"
-            name="name"
-            placeholder="name"
-          />
-        </div>
+        <Select
+          onChange={({ value }) => {
+            setName(value);
+          }}
+          options={options}
+        />
         <div>
           born
           <input
