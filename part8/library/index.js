@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import { ApolloServer, gql } from "apollo-server";
 import mongoose from "mongoose";
+import Author from "./models/author.model.js";
+import Book from "./models/book.model.js";
 
 const MONGODB_URL = process.env.MONGODB_URL;
 
@@ -55,60 +57,62 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      if (!args.author || !args.genre) return books;
+    bookCount: async () => await Book.collection.countDocuments(),
+    authorCount: async () => await Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
+      let books = await Book.find({}).populate("author");
+      if (!args.author && !args.genre) return books;
 
       if (args.author)
         return books.filter((book) => book.author === args.author);
 
-      if (args.genre)
-        return books.filter((book) => book.genres.includes(args.genre));
+      if (args.genre) {
+        books = books.filter((book) => book.genres.includes(args.genre));
+        return books;
+      }
     },
-    allAuthors: () => {
+    allAuthors: async () => {
+      const authors = await Author.find({});
+      const books = await Book.find({}).populate("author");
       return authors.map((author) => {
         const bookCount = books.reduce(
-          (accu, curr) => (curr.author === author.name ? accu + 1 : accu),
+          (accu, curr) => (curr.author.name === author.name ? accu + 1 : accu),
           0
         );
 
-        return { ...author, bookCount };
+        return {
+          name: author.name,
+          id: author._id,
+          born: author.born,
+          bookCount,
+        };
       });
     },
   },
 
   Mutation: {
-    addBook: (root, args) => {
-      const foundAuthor = authors.find((author) => author.name === args.name);
+    addBook: async (root, args) => {
+      const foundAuthor = await Author.findOne({ name: args.author });
       if (!foundAuthor) {
-        const author = {
+        const author = new Author({
           name: args.author,
-          id: uuid(),
           born: null,
-        };
-
-        authors = authors.concat(author);
+        });
+        await author.save();
       }
+      const author = await Author.findOne({ name: args.author });
 
-      const book = { ...args, id: uuid() };
-      books = books.concat(book);
+      const book = new Book({ ...args, author });
+      await book.save();
       return book;
     },
 
-    editAuthor: (root, args) => {
-      const foundAuthor = authors.find((author) => author.name === args.name);
+    editAuthor: async (root, args) => {
+      const foundAuthor = await Author.findOne({ name: args.name });
       if (foundAuthor) {
-        const updatedInfo = {
-          ...foundAuthor,
-          born: args.setBornTo,
-        };
+        foundAuthor.born = args.setBornTo;
 
-        authors = authors.map((author) =>
-          author.name === args.name ? updatedInfo : author
-        );
-
-        return updatedInfo;
+        return foundAuthor.save();
       }
 
       return;
