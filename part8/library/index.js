@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
-import { ApolloServer, gql } from "apollo-server";
+import { ApolloServer, gql, UserInputError } from "apollo-server";
 import mongoose from "mongoose";
 import Author from "./models/author.model.js";
 import Book from "./models/book.model.js";
@@ -98,21 +98,34 @@ const resolvers = {
           name: args.author,
           born: null,
         });
-        await author.save();
+
+        try {
+          await author.save();
+        } catch (e) {
+          throw new UserInputError(e.message, { invalidArgs: args });
+        }
       }
       const author = await Author.findOne({ name: args.author });
 
       const book = new Book({ ...args, author });
-      await book.save();
-      return book;
+      try {
+        await book.save();
+        return book;
+      } catch (e) {
+        throw new UserInputError(e.message, { invalidArgs: args });
+      }
     },
 
     editAuthor: async (root, args) => {
       const foundAuthor = await Author.findOne({ name: args.name });
       if (foundAuthor) {
-        foundAuthor.born = args.setBornTo;
+        try {
+          foundAuthor.born = args.setBornTo;
 
-        return foundAuthor.save();
+          return foundAuthor.save();
+        } catch (e) {
+          throw new UserInputError(e.message, { invalidArgs: args });
+        }
       }
 
       return;
