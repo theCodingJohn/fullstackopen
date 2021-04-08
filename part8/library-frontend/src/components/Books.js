@@ -1,19 +1,39 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
-import { GET_BOOKS } from "../queries";
+import React, { useState } from "react";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { GET_BOOKS, GENRE_FILTER } from "../queries";
+import FilterButton from "./FilterButton";
 
 const Books = (props) => {
+  const [genre, setGenre] = useState("allGenres");
   const result = useQuery(GET_BOOKS);
+  const [getFilteredBooks, filteredBooks] = useLazyQuery(GENRE_FILTER);
+  const genres = [
+    "refactoring",
+    "agile",
+    "patterns",
+    "design",
+    "crime",
+    "classic",
+    "allGenres",
+  ];
 
   if (!props.show) {
     return null;
   }
 
-  if (result.loading) {
+  if (result.loading || filteredBooks.loading) {
     return <div>loading...</div>;
   }
 
-  const books = result.data.allBooks;
+  const changeGenre = async (genre) => {
+    getFilteredBooks({ variables: { genre } });
+    setGenre(genre);
+  };
+
+  const books =
+    genre === "allGenres" || !filteredBooks.data
+      ? result.data.allBooks
+      : filteredBooks.data.allBooks;
 
   return (
     <div>
@@ -35,6 +55,13 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
+      {genres.map((genre, i) => (
+        <FilterButton
+          key={i}
+          name={genre}
+          handleClick={() => changeGenre(genre)}
+        />
+      ))}
     </div>
   );
 };
