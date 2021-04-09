@@ -25,7 +25,7 @@ const Books = (props) => {
     return <div>loading...</div>;
   }
 
-  const changeGenre = async (genre) => {
+  const changeGenre = (genre) => {
     getFilteredBooks({ variables: { genre } });
     setGenre(genre);
   };

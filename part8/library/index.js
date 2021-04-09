@@ -107,6 +107,7 @@ const resolvers = {
         };
       });
     },
+    me: (root, args, { currentUser }) => currentUser,
   },
 
   Mutation: {
@@ -193,9 +194,7 @@ const server = new ApolloServer({
     const auth = req ? req.headers.authorization : null;
     if (auth && auth.toLowerCase().startsWith("bearer ")) {
       const decodedToken = jwt.verify(auth.substring(7), "SECRET");
-      const currentUser = await User.findById(decodedToken.id).populate(
-        "friends"
-      );
+      const currentUser = await User.findById(decodedToken.id);
       return { currentUser };
     }
   },
