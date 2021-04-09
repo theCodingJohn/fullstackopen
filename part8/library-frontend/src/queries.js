@@ -58,7 +58,9 @@ export const ADD_BOOK = gql`
     ) {
       title
       published
-      author
+      author {
+        name
+      }
     }
   }
 `;

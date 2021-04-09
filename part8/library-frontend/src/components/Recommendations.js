@@ -26,7 +26,7 @@ const Recommendations = ({ show }) => {
   if (userBooks.loading) {
     return <div>loading...</div>;
   }
-  console.log(books);
+
   return (
     <div>
       <h2>recommendations</h2>
