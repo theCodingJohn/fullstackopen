@@ -1,3 +1,5 @@
+![Certificate](https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/ef69988180debb585ad868d01b8a1eaf)
+
 ## Course material
 
 ### Part 0: Fundamentals of Web apps
