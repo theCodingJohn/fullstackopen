@@ -174,6 +174,7 @@ const resolvers = {
 
       try {
         await user.save();
+        return user;
       } catch (e) {
         throw new UserInputError(e.message, { invalidArgs: args });
       }
